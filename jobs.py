@@ -12,6 +12,10 @@ from app import db, models, slack_client
 from bookings import MIN_SLOT_DURATION
 from bookings import SECONDS_IN_MIN
 from config import BOT_ID
+from config import TEMP_SENSOR_THRESHOLD
+from config import LOW_TEMP_MESSAGE
+from config import HIGH_TEMP_MESSAGE
+
 from dtutils import MINS_IN_HOUR
 from sqlalchemy import text
 
@@ -338,11 +342,21 @@ def send_reminders():
 			params(earlier=now_ts - SECONDS_IN_MIN / 2, \
 				later=now_ts + SECONDS_IN_MIN / 2).all()
 	
-		count = 0
-		for reminder in reminders:
-			slack_client.api_call("chat.postMessage", channel=reminder.slack_channel,
-				text=reminder.text, as_user=True)
-			count += 1
+		if reminders:
+			# get the status of room, including sensor info
+			status = mcu_utils.get_status()
+			
+			count = 0
+			for reminder in reminders:
+				msg = reminder.text
+				if status['temp']:
+					if status['temp'] <= TEMP_SENSOR_THRESHOLD['low']:
+						msg += '\n' + LOW_TEMP_MESSAGE
+					elif status['temp'] >= TEMP_SENSOR_THRESHOLD['high']:
+						msg += '\n' + HIGH_TEMP_MESSAGE
+				slack_client.api_call("chat.postMessage", channel=reminder.slack_channel,
+					text=msg, as_user=True)
+				count += 1
 		logging.info('Reminders sent: %s', count)		
 
 

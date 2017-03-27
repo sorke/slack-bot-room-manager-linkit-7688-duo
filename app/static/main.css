@@ -1,0 +1,6 @@
+body {
+	background: url("background.jpg") center center;
+	background-size: 1024px 768px;
+	background-repeat: no-repeat;
+	background-color: green;
+}

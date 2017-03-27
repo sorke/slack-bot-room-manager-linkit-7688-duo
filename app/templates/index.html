@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="60">
+<title>{{ room.name }}</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style type="text/css">
+	/* Some custom styles to beautify this example */
+	body {
+		background: url("static/background.jpg") no-repeat center fixed;
+		{% if status.colour == 'danger' %}
+		background-color: #d9534f;
+		{% elif status.colour == 'warning' %}
+		background-color: #f0ad4e;
+		{% else %}
+		background-color: #5cb85c;
+		{% endif %}
+		background-blend-mode: multiply;
+		background-size: cover;
+	}    
+	.rh-panel-content {
+		min-height: 250px;
+        padding-left: 1%;
+        padding-right: 1%;
+		color: white;
+    }
+    .lh-panel1-content {
+        min-height: 100px;
+        margin-bottom: 30px;
+        padding-left: 1%;
+        padding-right: 1%;
+		color: white;
+    }
+    .lh-panel2-content {
+        min-height: 150px;
+        margin-bottom: 30px;
+        padding-left: 1%;
+        padding-right: 1%;
+        padding-top: 30px;
+		color: white;
+    }
+    .lh-panel3-content {
+        min-height: 150px;
+        margin-bottom: 30px;
+        padding-left: 1%;
+        padding-right: 1%;
+		color: white;
+    }
+    .lh-panel4-content {
+        min-height: 70px;
+        margin-bottom: 30px;
+        padding-left: 1%;
+        padding-right: 1%;
+        padding-top: 3px;
+		color: white;
+    }
+    .lh-panel5-content {
+        min-height: 150px;
+        padding-left: 1%;
+        padding-right: 1%;
+        padding-top: 8%;
+		color: white;
+    }
+	.button {
+		background-color: transparent;
+		border: 2px solid white;
+		border-radius: 12px;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 24px;
+		margin: 4px 2px;
+		width: 100%;
+	}
+	kbd {
+  		background-color: white;
+  		color: black;
+	}
+</style>
+</head>
+<body>
+	<div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <!--Nested rows within a column-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="lh-panel1-content">
+							<div class="media">
+							  <div class="media-left media-middle">
+							  	<img class="media-object" src="static/Slack_Mark_White_Web.png" alt="..." style="height:42px">
+							  </div>
+							  <div class="media-body">
+								<h4>Book me on Slack: <kbd>{{ room.id }} free now</kbd></h4>
+							  </div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-sm-12">
+                        <div class="lh-panel2-content">
+                        	<h1>{{ room.name }}</h1>
+							<h4>{{ room.type }}</h4>
+                        </div>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-sm-12">
+                        <div class="lh-panel3-content">
+							<h2>{{ status.availability }}</h2>
+							{% if status.booker != None %}
+							<img class="media-object" src="{{ status.booker.image_48 }}" alt="..." style="height:48px">
+							{% endif %}
+							{% if status.availability == 'Available' %}
+							<h3>{{ status.next_booking }}</h3>
+							{% else %}
+								{% if status.next_free.startswith('Check') %}
+							<h3>{{ status.next_free }} <kbd>{{ room.id }} show all</kbd></h3>
+								{% else %}
+							<h3>{{ status.next_free }}</h3>
+								{% endif %}
+							{% endif %}
+                        </div>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-sm-12">
+                        <div class="lh-panel4-content">
+							<form action="" method="post" name="login">
+								{{ form.hidden_tag() }}
+								{{ form.booking_id }}
+								<button type="submit" class="button">{{ status.cta }}</button>
+							</form>
+                        </div>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-sm-12">
+                        <div class="lh-panel5-content">
+							{% if status.availability == 'Available' %}
+								{% if status.next_free.startswith('Check') %}
+							<h4>{{ status.next_free }} <kbd>{{ room.id }} show all</kbd></h4>
+								{% elif status.next_free != status.next_booking %}
+							<h4>{{ status.next_free }}</h4>
+								{% endif %}
+							{% else %}
+							<h4>{{ status.next_booking }}</h4>
+							{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="rh-panel-content">
+                	<h4 class="text-right">{{ time }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>                                		
